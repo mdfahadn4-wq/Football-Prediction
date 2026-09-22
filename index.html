@@ -2,312 +2,193 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>index.com</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Football Prediction Model</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#172033;font-family:Arial,sans-serif}
-.wrap{max-width:1250px;margin:auto;padding:16px}.top{background:#172033;color:white;padding:18px;border-radius:14px;margin-bottom:14px}
-h1{margin:0 0 6px;font-size:27px}.muted{color:#68758a;font-size:13px;line-height:1.5}.top .muted{color:#d4dcea}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{background:white;border:1px solid #dce4ef;border-radius:14px;padding:15px;box-shadow:0 4px 14px #1a29400c}
-h2{margin:0 0 12px;font-size:19px}h3{font-size:14px;color:#315681;margin:14px 0 8px}
-.inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.f label{display:block;font-size:10px;color:#6b778b;margin-bottom:4px}.f input{width:100%;padding:8px;border:1px solid #d7dfeb;border-radius:7px;font-size:13px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.btn{background:#1769e0;color:white;border:0;border-radius:9px;padding:11px 16px;font-weight:bold}.btn2{background:#66758a}
-.out{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.m{border:1px solid #dce4ef;border-radius:11px;padding:12px;background:#fbfdff}.m b{font-size:23px}.m small{display:block;color:#68758a;margin-bottom:5px}
-.bar{height:8px;background:#e7edf5;border-radius:8px;overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;background:#1769e0}
-table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #e6ebf2;text-align:left}th{font-size:11px;color:#718097}td:last-child,th:last-child{text-align:right}
-.badge{display:inline-block;padding:4px 8px;border-radius:99px;background:#eef5ff;color:#185dbb;font-size:11px;font-weight:bold}
-.full{grid-column:1/-1}.warning{background:#fff7e7;border:1px solid #f0d59b;padding:10px;border-radius:9px;font-size:12px;color:#72561c}
-@media(max-width:850px){.grid,.out{grid-template-columns:1fr}.inputs{grid-template-columns:repeat(2,1fr)}}
-
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f5f9;color:#172033}
+.container{max-width:1100px;margin:auto;padding:18px}.card{background:#fff;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 3px 14px #00000012}
+h1{margin:0 0 6px;font-size:25px}h2{font-size:18px;margin:0 0 14px}.muted{color:#667085;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.team{border:1px solid #dfe4ec;border-radius:12px;padding:14px}
+label{display:block;font-size:13px;font-weight:600;margin:9px 0 5px}
+input{width:100%;padding:10px;border:1px solid #cfd6e1;border-radius:8px;font-size:14px}
+button{border:0;border-radius:9px;padding:11px 18px;background:#1769e0;color:white;font-weight:bold;cursor:pointer}
+button.secondary{background:#667085}.buttons{display:flex;gap:10px;margin-top:15px}
+table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid #e7eaf0;text-align:center;font-size:13px}th{background:#f7f8fa}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.result{padding:15px;border-radius:10px;background:#f7f9fc;text-align:center}.big{font-size:25px;font-weight:700;margin-top:5px}
+.bar{height:10px;background:#e8ebf0;border-radius:8px;overflow:hidden}.fill{height:100%;background:#1769e0}
+.error{color:#c62828;font-size:13px;margin-top:10px}
+@media(max-width:700px){.grid,.results{grid-template-columns:1fr}}
 @media print{
-  body{background:#fff!important}
-  .actions,button,.no-print{display:none!important}
-  .card,.top{box-shadow:none!important}
-  .wrap{max-width:none!important;padding:0!important}
-  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff}
+  .container{max-width:none;padding:0}
+  .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+  button,.buttons{display:none!important}
+  input{border:0;padding:3px}
+  .muted{color:#555}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="top">
-<h1>index.com</h1>
-<div class="muted">Enhanced stats-based model combining Overall + Home/Away xG, goals, W-D-L, defensive strength, BTTS, Over/Under, 1H/2H signals and diagnostic risk indicators. Browser history is saved locally on this device. The model estimates probabilities; it does not guarantee results.</div>
+<div class="container">
+<div class="card">
+<h1>⚽ Football Prediction Model</h1>
+<div class="muted">Overall + Home/Away + Last 5 inputs → Strength → xG → 1X2</div>
 </div>
 
+<div class="card">
+<h2>Team Inputs</h2>
 <div class="grid">
-<div class="card full">
-<h2>Overall Statistics</h2><div class="inputs"><div class="f"><label>Team A Name</label><input id="teamAName" value="Team A"></div><div class="f"><label>Team B Name</label><input id="teamBName" value="Team B"></div></div>
-<div class="muted">Enter season/overall team statistics separately from the Home/Away split. Overall data is blended with venue-specific data in the model.</div>
-<div class="grid" style="margin-top:12px">
-<div><h3>Team A — Overall</h3><div class="inputs">
-<div class="f"><label>Win %</label><input id="aoW" value="45"></div><div class="f"><label>Draw %</label><input id="aoD" value="25"></div><div class="f"><label>Loss %</label><input id="aoL" value="30"></div>
-<div class="f"><label>Scored / Match</label><input id="aoGF" value="1.70"></div><div class="f"><label>Conceded / Match</label><input id="aoGA" value="1.20"></div>
-<div class="f"><label>xG For</label><input id="aoXGF" value="1.65"></div><div class="f"><label>xG Against</label><input id="aoXGA" value="1.35"></div>
-<div class="f"><label>Clean Sheets %</label><input id="aoCS" value="25"></div><div class="f"><label>Failed To Score %</label><input id="aoFTS" value="15"></div>
-<div class="f"><label>Over 1.5 %</label><input id="aoO15" value="80"></div><div class="f"><label>Over 2.5 %</label><input id="aoO25" value="55"></div><div class="f"><label>Under 2.5 %</label><input id="aoU25" value="45"></div>
-<div class="f"><label>Under 3.5 %</label><input id="aoU35" value="72"></div><div class="f"><label>BTTS %</label><input id="aoBTTS" value="58"></div><div class="f"><label>BTTS & Draw %</label><input id="aoBTD" value="15"></div>
-</div></div>
-<div><h3>Team B — Overall</h3><div class="inputs">
-<div class="f"><label>Win %</label><input id="boW" value="38"></div><div class="f"><label>Draw %</label><input id="boD" value="27"></div><div class="f"><label>Loss %</label><input id="boL" value="35"></div>
-<div class="f"><label>Scored / Match</label><input id="boGF" value="1.45"></div><div class="f"><label>Conceded / Match</label><input id="boGA" value="1.35"></div>
-<div class="f"><label>xG For</label><input id="boXGF" value="1.48"></div><div class="f"><label>xG Against</label><input id="boXGA" value="1.42"></div>
-<div class="f"><label>Clean Sheets %</label><input id="boCS" value="22"></div><div class="f"><label>Failed To Score %</label><input id="boFTS" value="20"></div>
-<div class="f"><label>Over 1.5 %</label><input id="boO15" value="78"></div><div class="f"><label>Over 2.5 %</label><input id="boO25" value="52"></div><div class="f"><label>Under 2.5 %</label><input id="boU25" value="48"></div>
-<div class="f"><label>Under 3.5 %</label><input id="boU35" value="75"></div><div class="f"><label>BTTS %</label><input id="boBTTS" value="55"></div><div class="f"><label>BTTS & Draw %</label><input id="boBTD" value="16"></div>
-</div></div>
-</div></div>
-<div class="card">
-<h2>Team A — Home</h2>
-<h3>Core</h3>
-<div class="inputs">
-<div class="f"><label>Win %</label><input id="aW" value="47"></div><div class="f"><label>Draw %</label><input id="aD" value="20"></div><div class="f"><label>Loss %</label><input id="aL" value="33"></div>
-<div class="f"><label>Scored / Match</label><input id="aGF" value="2.13"></div><div class="f"><label>Conceded / Match</label><input id="aGA" value="1.13"></div>
-<div class="f"><label>xG For</label><input id="aXGF" value="1.95"></div><div class="f"><label>xG Against</label><input id="aXGA" value="1.58"></div>
-<div class="f"><label>Clean Sheets %</label><input id="aCS" value="20"></div><div class="f"><label>Failed To Score %</label><input id="aFTS" value="7"></div>
-</div>
-<h3>Goals / BTTS</h3>
-<div class="inputs">
-<div class="f"><label>Over 1.5 %</label><input id="aO15" value="87"></div><div class="f"><label>Over 2.5 %</label><input id="aO25" value="60"></div><div class="f"><label>Under 2.5 %</label><input id="aU25" value="40"></div>
-<div class="f"><label>Under 3.5 %</label><input id="aU35" value="67"></div><div class="f"><label>BTTS %</label><input id="aBTTS" value="73"></div><div class="f"><label>BTTS & Draw %</label><input id="aBTD" value="20"></div>
-</div>
-<h3>Draw / Loss signals</h3>
-<div class="inputs">
-<div class="f"><label>Draw %</label><input id="aDraw" value="20"></div>
-<div class="f"><label>Loss %</label><input id="aLoss" value="33"></div>
-<div class="f"><label>1H Draw %</label><input id="a1Draw" value="33"></div>
-<div class="f"><label>1H Loss %</label><input id="a1Loss" value="20"></div>
-<div class="f"><label>2H Draw %</label><input id="a2Draw" value="20"></div>
-<div class="f"><label>2H Loss %</label><input id="a2Loss" value="33"></div>
-</div>
-<h3>Draw / Loss signals</h3>
-<div class="inputs">
-<div class="f"><label>Draw %</label><input id="bDraw" value="25"></div>
-<div class="f"><label>Loss %</label><input id="bLoss" value="35"></div>
-<div class="f"><label>1H Draw %</label><input id="b1Draw" value="31"></div>
-<div class="f"><label>1H Loss %</label><input id="b1Loss" value="27"></div>
-<div class="f"><label>2H Draw %</label><input id="b2Draw" value="34"></div>
-<div class="f"><label>2H Loss %</label><input id="b2Loss" value="28"></div>
-</div>
-<h3>Half data</h3>
-<div class="inputs">
-<div class="f"><label>1H Win %</label><input id="a1W" value="47"></div><div class="f"><label>1H Draw %</label><input id="a1D" value="33"></div><div class="f"><label>1H Loss %</label><input id="a1L" value="20"></div>
-<div class="f"><label>1H Scored Avg</label><input id="a1GF" value="1.07"></div><div class="f"><label>1H Conceded Avg</label><input id="a1GA" value=".47"></div>
-<div class="f"><label>2H Scored Avg</label><input id="a2GF" value="1.07"></div><div class="f"><label>2H Conceded Avg</label><input id="a2GA" value=".67"></div>
-<div class="f"><label>2H Win %</label><input id="a2W" value="47"></div><div class="f"><label>2H Draw %</label><input id="a2D" value="20"></div>
-</div>
+<div class="team">
+<h3>Home Team</h3>
+<label>Team Name</label><input id="hn" placeholder="Home Team">
+<label>Overall Win %</label><input id="hw" type="number" min="0" max="100" step="0.1">
+<label>Overall GF / Match</label><input id="hgf" type="number" min="0" step="0.01">
+<label>Overall GA / Match</label><input id="hga" type="number" min="0" step="0.01">
+<label>Home Win %</label><input id="hhomew" type="number" min="0" max="100" step="0.1">
+<label>Home GF / Match</label><input id="hhomegf" type="number" min="0" step="0.01">
+<label>Home GA / Match</label><input id="hhomega" type="number" min="0" step="0.01">
+<label>Last 5 GF / Match</label><input id="h5gf" type="number" min="0" step="0.01">
+<label>Last 5 GA / Match</label><input id="h5ga" type="number" min="0" step="0.01">
+<label>Last 5 PPG (0–3)</label><input id="hppg" type="number" min="0" max="3" step="0.01">
 </div>
 
-<div class="card">
-<h2>Team B — Away</h2>
-<h3>Core</h3>
-<div class="inputs">
-<div class="f"><label>Win %</label><input id="bW" value="40"></div><div class="f"><label>Draw %</label><input id="bD" value="25"></div><div class="f"><label>Loss %</label><input id="bL" value="35"></div>
-<div class="f"><label>Scored / Match</label><input id="bGF" value="1.35"></div><div class="f"><label>Conceded / Match</label><input id="bGA" value="1.25"></div>
-<div class="f"><label>xG For</label><input id="bXGF" value="1.45"></div><div class="f"><label>xG Against</label><input id="bXGA" value="1.40"></div>
-<div class="f"><label>Clean Sheets %</label><input id="bCS" value="30"></div><div class="f"><label>Failed To Score %</label><input id="bFTS" value="20"></div>
-</div>
-<h3>Goals / BTTS</h3>
-<div class="inputs">
-<div class="f"><label>Over 1.5 %</label><input id="bO15" value="72"></div><div class="f"><label>Over 2.5 %</label><input id="bO25" value="48"></div><div class="f"><label>Under 2.5 %</label><input id="bU25" value="52"></div>
-<div class="f"><label>Under 3.5 %</label><input id="bU35" value="75"></div><div class="f"><label>BTTS %</label><input id="bBTTS" value="55"></div><div class="f"><label>BTTS & Draw %</label><input id="bBTD" value="14"></div>
-</div>
-<h3>Half data</h3>
-<div class="inputs">
-<div class="f"><label>1H Win %</label><input id="b1W" value="42"></div><div class="f"><label>1H Draw %</label><input id="b1D" value="31"></div><div class="f"><label>1H Loss %</label><input id="b1L" value="27"></div>
-<div class="f"><label>1H Scored Avg</label><input id="b1GF" value=".85"></div><div class="f"><label>1H Conceded Avg</label><input id="b1GA" value=".55"></div>
-<div class="f"><label>2H Scored Avg</label><input id="b2GF" value=".60"></div><div class="f"><label>2H Conceded Avg</label><input id="b2GA" value=".70"></div>
-<div class="f"><label>2H Win %</label><input id="b2W" value="35"></div><div class="f"><label>2H Draw %</label><input id="b2D" value="34"></div>
+<div class="team">
+<h3>Away Team</h3>
+<label>Team Name</label><input id="an" placeholder="Away Team">
+<label>Overall Win %</label><input id="aw" type="number" min="0" max="100" step="0.1">
+<label>Overall GF / Match</label><input id="agf" type="number" min="0" step="0.01">
+<label>Overall GA / Match</label><input id="aga" type="number" min="0" step="0.01">
+<label>Away Win %</label><input id="aawayw" type="number" min="0" max="100" step="0.1">
+<label>Away GF / Match</label><input id="aawaygf" type="number" min="0" step="0.01">
+<label>Away GA / Match</label><input id="aawayga" type="number" min="0" step="0.01">
+<label>Last 5 GF / Match</label><input id="a5gf" type="number" min="0" step="0.01">
+<label>Last 5 GA / Match</label><input id="a5ga" type="number" min="0" step="0.01">
+<label>Last 5 PPG (0–3)</label><input id="appg" type="number" min="0" max="3" step="0.01">
 </div>
 </div>
-
-<div class="card full">
-<h2>Model Controls</h2>
-<div class="inputs">
-<div class="f"><label>xG / goals weight %</label><input id="wxg" value="55"></div>
-<div class="f"><label>W-D-L weight %</label><input id="wwdl" value="25"></div>
-<div class="f"><label>Market-stat weight %</label><input id="wmkt" value="20"></div>
-<div class="f"><label>Home advantage multiplier</label><input id="homeadv" step=".01" value="1.06"></div>
-<div class="f"><label>Recent-form multiplier (optional)</label><input id="recent" step=".01" value="1.00"></div>
+<div class="buttons">
+<button onclick="predict()">Calculate Prediction</button>
+<button class="secondary" onclick="resetForm()">Reset</button>
+<button class="secondary" onclick="savePDF()">Save PDF</button>
 </div>
-<div class="actions"><button class="btn" onclick="run()">Calculate Advanced Prediction</button><button class="btn btn2" onclick="saveHistory()">Save to History</button><button class="btn btn2 no-print" onclick="window.print()">Save / Print PDF</button><button class="btn btn2" onclick="location.reload()">Reset</button></div>
-<div class="warning">Important: stronger here means more signals are combined and checked for agreement. It does not mean the model has been statistically proven more accurate without a historical back-test dataset.</div>
+<div id="err"></div>
 </div>
 
-
-<div class="card full">
-<h2>V4 Enhanced Diagnostics</h2>
-<div class="out">
-  <div class="m"><small>Prediction Edge</small><b id="v4Edge">—</b><div class="bar"><i id="v4EdgeBar" style="width:0%"></i></div></div>
-  <div class="m"><small>Draw Risk Level</small><b id="v4DrawLevel">—</b><div class="bar"><i id="v4DrawBar" style="width:0%"></i></div></div>
-  <div class="m"><small>Goal Volatility</small><b id="v4GoalVol">—</b><div class="bar"><i id="v4GoalBar" style="width:0%"></i></div></div>
-  <div class="m"><small>Signal Agreement</small><b id="v4Agree">—</b><div class="bar"><i id="v4AgreeBar" style="width:0%"></i></div></div>
-  <div class="m"><small>Data Quality</small><b id="v4Quality">—</b><div class="bar"><i id="v4QualityBar" style="width:0%"></i></div></div>
+<div class="card" id="output" style="display:none">
+<h2>Model Output</h2>
+<div class="results">
+<div class="result">Home xG<div class="big" id="hxg">-</div></div>
+<div class="result">Away xG<div class="big" id="axg">-</div></div>
+<div class="result">Expected Total Goals<div class="big" id="txg">-</div></div>
 </div>
-<div id="v4Note" class="warning" style="margin-top:12px">V4 diagnostics appear after calculation.</div>
+<br>
+<table>
+<tr><th>Market</th><th>Probability</th><th>Visual</th></tr>
+<tr><td>Home Win (1)</td><td id="p1">-</td><td><div class="bar"><div id="b1" class="fill"></div></div></td></tr>
+<tr><td>Draw (X)</td><td id="px">-</td><td><div class="bar"><div id="bx" class="fill"></div></div></td></tr>
+<tr><td>Away Win (2)</td><td id="p2">-</td><td><div class="bar"><div id="b2" class="fill"></div></div></td></tr>
+<tr><td>Over 2.5</td><td id="over">-</td><td><div class="bar"><div id="bo" class="fill"></div></div></td></tr>
+<tr><td>Under 2.5</td><td id="under">-</td><td><div class="bar"><div id="bu" class="fill"></div></div></td></tr>
+<tr><td>BTTS Yes</td><td id="btts">-</td><td><div class="bar"><div id="bb" class="fill"></div></div></td></tr>
+</table>
 </div>
 
-<div class="card full no-print"><h2>Prediction History</h2><div class="actions"><button class="btn btn2" onclick="toggleHistory()">View / Hide History</button><button class="btn btn2" onclick="exportHistory()">Export CSV</button><button class="btn btn2" onclick="clearHistory()">Clear All</button></div><div id="history" style="display:none"></div></div>
-<div class="card full"><div id="result"></div></div>
+<div class="card" id="strengthCard" style="display:none">
+<h2>Calculated Strength</h2>
+<table>
+<tr><th></th><th>Home</th><th>Away</th></tr>
+<tr><td>Attack Strength</td><td id="ha">-</td><td id="aa">-</td></tr>
+<tr><td>Defence Strength</td><td id="hd">-</td><td id="ad">-</td></tr>
+<tr><td>Form Strength</td><td id="hf">-</td><td id="af">-</td></tr>
+</table>
+<p class="muted">Weights: Overall 30% • Home/Away 25% • Attack 20% • Defence 15% • Last 5 Form 10%.</p>
 </div>
 </div>
 
 <script>
-const g=id=>parseFloat(document.getElementById(id).value)||0;
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-const fac=n=>{let r=1;for(let i=2;i<=n;i++)r*=i;return r};
-const poi=(k,l)=>Math.exp(-l)*Math.pow(l,k)/fac(k);
-const pct=x=>(x*100).toFixed(1)+'%';
+const $=id=>document.getElementById(id);
+function n(id){let v=parseFloat($(id).value);return Number.isFinite(v)?v:null}
+function pct(v){return (v*100).toFixed(1)+"%"}
+function setBar(id,v){$(id).style.width=Math.max(0,Math.min(100,v*100))+"%"}
 
-function attack(p){
- return .48*g(p+'XGF')+.32*g(p+'GF')+.12*(100-g(p+'FTS'))/50+.08*(g(p+'O15')/100);
-}
-function defense(p){
- return .50*g(p+'XGA')+.32*g(p+'GA')+.10*(100-g(p+'CS'))/50+.08*(g(p+'U35')/100);
-}
-function empirical(){
- const aw=.65*g('aW')/100+.35*g('aoW')/100, ad=.65*g('aDraw')/100+.35*g('aoD')/100, al=.65*g('aLoss')/100+.35*g('aoL')/100;
- const bw=.65*g('bW')/100+.35*g('boW')/100, bd=.65*g('bDraw')/100+.35*g('boD')/100, bl=.65*g('bLoss')/100+.35*g('boL')/100;
- let A=.55*aw+.45*bl; let B=.55*bw+.45*al;
- let D=.65*((ad+bd)/2)+.35*(1-Math.min(1,Math.abs(ad-bd)/.30))*((ad+bd)/2);
- let s=A+D+B; return [A/s,D/s,B/s];
-}
-function overallAttack(p){ return .48*g(p+'oXGF')+.32*g(p+'oGF')+.12*(100-g(p+'oFTS'))/50+.08*(g(p+'oO15')/100); }
-function overallDefense(p){ return .50*g(p+'oXGA')+.32*g(p+'oGA')+.10*(100-g(p+'oCS'))/50+.08*(g(p+'oU35')/100); }
+function poisson(k,lambda){return Math.exp(-lambda)*Math.pow(lambda,k)/factorial(k)}
+function factorial(n){let x=1;for(let i=2;i<=n;i++)x*=i;return x}
 
-function runCore(){
- const wx=clamp(g('wxg')/100,0,1), ww=clamp(g('wwdl')/100,0,1), wm=clamp(g('wmkt')/100,0,1);
- let sum=wx+ww+wm||1;
- const homeAdv=clamp(g('homeadv'),.85,1.25), recent=clamp(g('recent'),.80,1.20);
+function predict(){
+  $("err").textContent="";
+  const ids=["hw","hgf","hga","hhomew","hhomegf","hhomega","h5gf","h5ga","hppg","aw","agf","aga","aawayw","aawaygf","aawayga","a5gf","a5ga","appg"];
+  if(ids.some(id=>n(id)===null)){ $("err").textContent="Please fill all numeric inputs."; return; }
 
- // Symmetric attack/defence blend. xG is intentionally dominant.
- let a=(.65*(.62*attack('a')+.38*defense('b'))+.35*(.62*overallAttack('a')+.38*overallDefense('b')))*homeAdv*recent;
- let b=(.65*(.62*attack('b')+.38*defense('a'))+.35*(.62*overallAttack('b')+.38*overallDefense('a')))/homeAdv/recent;
- // Bring goal-market information into expected-goal estimates without letting it dominate.
- a=.80*a+.20*(.85+g('aO25')/100*.95);
- b=.80*b+.20*(.80+g('bO25')/100*.90);
- a=clamp(a,.20,4.0);b=clamp(b,.20,4.0);
+  let hw=n("hw")/100, aw=n("aw")/100;
+  let hhomew=n("hhomew")/100, aawayw=n("aawayw")/100;
 
- let A=0,D=0,B=0,BT=0,O15=0,O25=0,O35=0,U25=0,arr=[];
- for(let i=0;i<=8;i++)for(let j=0;j<=8;j++){
-   let p=poi(i,a)*poi(j,b);
-   // Dixon-Coles-style low-score correction: draws 0-0/1-1 receive a modest adjustment.
-   if(i===0&&j===0)p*=.94;
-   if(i===1&&j===1)p*=1.04;
-   if(i>j)A+=p;else if(i===j)D+=p;else B+=p;
-   if(i>0&&j>0)BT+=p;if(i+j>=2)O15+=p;if(i+j>=3)O25+=p;if(i+j>=4)O35+=p;if(i+j<=2)U25+=p;
-   arr.push([i,j,p]);
- }
- let z=A+D+B; A/=z;D/=z;B/=z;BT/=z;O15/=z;O25/=z;O35/=z;U25/=z;
+  // Attack: relative scoring, capped to avoid extreme xG.
+  let hAttack=.45*n("hgf")+.35*n("hhomegf")+.20*n("h5gf");
+  let aAttack=.45*n("agf")+.35*n("aawaygf")+.20*n("a5gf");
 
- const prior=empirical();
- const drawBase=clamp((.65*(g('aDraw')+g('bDraw'))+.35*(g('aoD')+g('boD')))/200,0,1);
- const lossA=clamp((.65*(g('aLoss')+g('bW'))+.35*(g('aoL')+g('boW')))/200,0,1);
- const lossB=clamp((.65*(g('bLoss')+g('aW'))+.35*(g('boL')+g('aoW')))/200,0,1);
- const halfDraw=clamp((g('a1Draw')+g('b1Draw')+g('a2Draw')+g('b2Draw'))/400,0,1);
- const halfLoss=clamp((g('a1Loss')+g('b1Loss')+g('a2Loss')+g('b2Loss'))/400,0,1);
- // Market-stat component: goal-market + BTTS + draw-linked information.
- const mDraw=clamp((.65*(g('aBTD')+g('bBTD'))+.35*(g('aoBTD')+g('boBTD')))/200 + (.65*(g('aU25')+g('bU25'))+.35*(g('aoU25')+g('boU25')))/200*.18,0,1);
- let mA=clamp((g('aW')/100 + (1-g('bW')/100))/2,0,1);
- let mB=clamp((g('bW')/100 + (1-g('aW')/100))/2,0,1);
- let mO=clamp((g('aO25')+g('bO25'))/200,0,1);
- let ma=mA*(1-mDraw)*(.65+.35*mO), mb=mB*(1-mDraw)*(.65+.35*mO), md=mDraw;
- let mz=ma+mb+md||1;ma/=mz;mb/=mz;md/=mz;
+  // Defence quality: lower GA is better. Convert GA to a bounded strength score.
+  let hDef=1/(1+.45*n("hga")+.35*n("hhomega")+.20*n("h5ga"));
+  let aDef=1/(1+.45*n("aga")+.35*n("aawayga")+.20*n("a5ga"));
 
- let fa=(wx*A+ww*prior[0]+wm*ma)/sum;
- let fd=(wx*D+ww*prior[1]+wm*md)/sum;
- let fb=(wx*B+ww*prior[2]+wm*mb)/sum;
- // Small explicit Draw/Loss overlay so these signals inform but do not dominate.
- fa += .025*(lossA-.50);
- fb += .025*(lossB-.50);
- fd += .050*(drawBase-.25) + .020*(halfDraw-.25);
- fa -= .010*(halfLoss-.25);
- fb -= .010*(halfLoss-.25);
- fa=Math.max(.001,fa); fd=Math.max(.001,fd); fb=Math.max(.001,fb);
- let zz=fa+fd+fb;fa/=zz;fd/=zz;fb/=zz;
+  let hForm=.5*hw+.25*hhomew+.25*(n("hppg")/3);
+  let aForm=.5*aw+.25*aawayw+.25*(n("appg")/3);
 
- // Draw risk = model draw + low-scoring closeness + empirical draw support.
- const closeness=1-Math.min(1,Math.abs(a-b)/1.8);
- const low=.5*(U25 + (1-O15));
- const drawRisk=clamp(100*(.52*fd+.18*closeness+.12*low+.10*drawBase+.08*halfDraw),0,100);
+  // Relative strength components, normalized around the two teams.
+  let overallH=hw, overallA=aw;
+  let venueH=hhomew, venueA=aawayw;
+  let atkSum=hAttack+aAttack || 1;
+  let defSum=hDef+aDef || 1;
 
- // Confidence is agreement between the independent components, not historical accuracy.
- const agree=1-(Math.abs(A-prior[0])+Math.abs(D-prior[1])+Math.abs(B-prior[2]))/2;
- const confidence=clamp(100*(.55*agree+.45*(Math.max(fa,fd,fb)-1/3)*1.5),25,95);
- lastPrediction={aWin:pct(fa),draw:pct(fd),bWin:pct(fb),drawRisk:pct(drawRisk/100),confidence:pct(confidence/100),topScore:'calculating'};
+  let hStrength=.30*overallH+.25*venueH+.20*(hAttack/atkSum)+.15*(hDef/defSum)+.10*hForm;
+  let aStrength=.30*overallA+.25*venueA+.20*(aAttack/atkSum)+.15*(aDef/defSum)+.10*aForm;
 
- arr.sort((x,y)=>y[2]-x[2]);
- lastPrediction.topScore=arr[0][0]+'-'+arr[0][1]+' ('+pct(arr[0][2]/z)+')';
- document.getElementById('result').innerHTML=`
- <div class="out">
-  ${card((document.getElementById('teamAName')?.value||'Team A')+' Win',fa)}${card('Draw',fd)}${card((document.getElementById('teamBName')?.value||'Team B')+' Win',fb)}${card('Draw Risk',drawRisk/100)}${card('Model Confidence',confidence/100)}
- </div>
- <div style="margin-top:14px"><table>
- <tr><th>Advanced output</th><th>Value</th></tr>
- <tr><td>Expected goals — Team A</td><td>${a.toFixed(2)}</td></tr>
- <tr><td>Expected goals — Team B</td><td>${b.toFixed(2)}</td></tr>
- <tr><td>Over 1.5</td><td>${pct(O15)}</td></tr>
- <tr><td>Over 2.5</td><td>${pct(O25)}</td></tr>
- <tr><td>Over 3.5</td><td>${pct(O35)}</td></tr>
- <tr><td>Under 2.5</td><td>${pct(U25)}</td></tr>
- <tr><td>BTTS</td><td>${pct(BT)}</td></tr>
- <tr><td>Draw % base signal</td><td>${pct(drawBase)}</td></tr>
- <tr><td>Loss pressure — Team A</td><td>${pct(lossA)}</td></tr>
- <tr><td>Loss pressure — Team B</td><td>${pct(lossB)}</td></tr>
- <tr><td>1H draw signal</td><td>${((g('a1Draw')+g('b1Draw'))/2).toFixed(1)}%</td></tr>
- <tr><td>2H draw signal</td><td>${((g('a2Draw')+g('b2Draw'))/2).toFixed(1)}%</td></tr>
- </table></div>
- <div style="margin-top:14px"><b>Top scorelines</b><table><tr><th>Score</th><th>Probability</th></tr>
- ${arr.slice(0,8).map(x=>`<tr><td>${x[0]} - ${x[1]}</td><td>${pct(x[2]/z)}</td></tr>`).join('')}</table></div>
- <p class="muted" style="margin-top:12px"><span class="badge">Ensemble</span> Final 1X2 blends the Poisson/xG component, W-D-L prior and goal-market component. Draw Risk is a separate diagnostic signal and should not be interpreted as a guarantee.</p>`;
+  // xG baseline from scoring + opponent defence + relative strength.
+  let hBase=.55*n("hhomegf")+.25*n("hgf")+.20*n("h5gf");
+  let aBase=.55*n("aawaygf")+.25*n("agf")+.20*n("a5gf");
+  let hOppGA=.55*n("aawayga")+.25*n("aga")+.20*n("a5ga");
+  let aOppGA=.55*n("hhomega")+.25*n("hga")+.20*n("h5ga");
+
+  let hxg=.50*hBase+.30*hOppGA+.20*(hStrength*2.2);
+  let axg=.50*aBase+.30*aOppGA+.20*(aStrength*2.2);
+
+  hxg=Math.max(.15,Math.min(4.5,hxg));
+  axg=Math.max(.15,Math.min(4.5,axg));
+
+  let p1=0,px=0,p2=0,over=0,btts=0;
+  const max=10;
+  for(let i=0;i<=max;i++){
+    for(let j=0;j<=max;j++){
+      let p=poisson(i,hxg)*poisson(j,axg);
+      if(i>j)p1+=p; else if(i===j)px+=p; else p2+=p;
+      if(i+j>2)over+=p;
+      if(i>0&&j>0)btts+=p;
+    }
+  }
+  let total=p1+px+p2;
+  p1/=total;px/=total;p2/=total;
+
+  $("output").style.display="block";$("strengthCard").style.display="block";
+  $("hxg").textContent=hxg.toFixed(2);$("axg").textContent=axg.toFixed(2);$("txg").textContent=(hxg+axg).toFixed(2);
+  $("p1").textContent=pct(p1);$("px").textContent=pct(px);$("p2").textContent=pct(p2);
+  $("over").textContent=pct(over);$("under").textContent=pct(1-over);$("btts").textContent=pct(btts);
+  setBar("b1",p1);setBar("bx",px);setBar("b2",p2);setBar("bo",over);setBar("bu",1-over);setBar("bb",btts);
+
+  $("ha").textContent=hAttack.toFixed(2);$("aa").textContent=aAttack.toFixed(2);
+  $("hd").textContent=hDef.toFixed(3);$("ad").textContent=aDef.toFixed(3);
+  $("hf").textContent=pct(hForm);$("af").textContent=pct(aForm);
 }
 
-
-function run(){
-  runCore();
-  const text = document.getElementById('result').innerText || '';
-  const m = s => { const x=text.match(new RegExp(s+'\\s*([0-9.]+)%')); return x ? parseFloat(x[1]) : 0; };
-  const aw=m('Win'); // fallback below uses DOM cards for exact values
-  const cards=[...document.querySelectorAll('#result .m b')].map(x=>parseFloat(x.innerText));
-  const A=cards[0]||0, D=cards[1]||0, B=cards[2]||0, DR=cards[3]||0, C=cards[4]||0;
-  const edge=Math.max(A,B)-Math.min(A,B);
-  const closeness=Math.max(0,100-edge);
-  const goalVol=Math.min(100, Math.max(0, (g('aO25')+g('bO25'))/2));
-  const agree=Math.max(0,Math.min(100,100-Math.abs(A-(100-B))/2));
-  const ids=['aoW','aoD','aoL','aoGF','aoGA','aoXGF','aoXGA','aW','aD','aL','aGF','aGA','aXGF','aXGA','bW','bD','bL','bGF','bGA','bXGF','bXGA','boW','boD','boL','boGF','boGA','boXGF','boXGA'];
-  const filled=ids.filter(id=>document.getElementById(id) && document.getElementById(id).value!=='').length;
-  const quality=Math.round(100*filled/ids.length);
-  const level=DR>=45?'HIGH':DR>=30?'MEDIUM':'LOW';
-  document.getElementById('v4Edge').textContent=edge.toFixed(1)+'%';
-  document.getElementById('v4EdgeBar').style.width=Math.min(100,edge*2)+'%';
-  document.getElementById('v4DrawLevel').textContent=level;
-  document.getElementById('v4DrawBar').style.width=DR+'%';
-  document.getElementById('v4GoalVol').textContent=goalVol.toFixed(1)+'%';
-  document.getElementById('v4GoalBar').style.width=goalVol+'%';
-  document.getElementById('v4Agree').textContent=agree.toFixed(1)+'%';
-  document.getElementById('v4AgreeBar').style.width=agree+'%';
-  document.getElementById('v4Quality').textContent=quality+'%';
-  document.getElementById('v4QualityBar').style.width=quality+'%';
-  document.getElementById('v4Note').innerHTML =
-    '<b>Diagnostic:</b> Draw Risk '+DR.toFixed(1)+'%. ' +
-    'The largest 1X2 probability is '+Math.max(A,D,B).toFixed(1)+'%. ' +
-    'These are model diagnostics, not guarantees or historical accuracy claims.';
+function resetForm(){
+ document.querySelectorAll("input").forEach(x=>x.value="");
+ $("output").style.display="none";$("strengthCard").style.display="none";$("err").textContent="";
 }
-
-let lastPrediction=null;
-function allInputIds(){ return Array.from(document.querySelectorAll('input[id]')).map(x=>x.id); }
-function saveHistory(){ if(!lastPrediction){ alert('Please calculate a prediction first.'); return; } const items=JSON.parse(localStorage.getItem('footballPredictionHistoryV3')||'[]'); const rec={id:Date.now(),time:new Date().toISOString(),teamA:document.getElementById('teamAName')?.value||'Team A',teamB:document.getElementById('teamBName')?.value||'Team B',inputs:{},result:lastPrediction}; allInputIds().forEach(id=>rec.inputs[id]=document.getElementById(id).value); items.unshift(rec); localStorage.setItem('footballPredictionHistoryV3',JSON.stringify(items.slice(0,100))); renderHistory(); alert('Prediction saved to history.'); }
-function getHistory(){ try{return JSON.parse(localStorage.getItem('footballPredictionHistoryV3')||'[]')}catch(e){return[]} }
-function toggleHistory(){const h=document.getElementById('history'); h.style.display=h.style.display==='none'?'block':'none'; if(h.style.display==='block')renderHistory();}
-function renderHistory(){const h=document.getElementById('history'); if(!h)return; const items=getHistory(); if(!items.length){h.innerHTML='<p class="muted">No saved predictions yet.</p>';return;} h.innerHTML='<table><tr><th>Date / Time</th><th>Teams</th><th>A Win</th><th>Draw</th><th>B Win</th><th>Draw Risk</th><th>Confidence</th><th>Top Score</th><th>Action</th></tr>'+items.map(r=>`<tr><td>${new Date(r.time).toLocaleString()}</td><td>${esc(r.teamA)} vs ${esc(r.teamB)}</td><td>${r.result.aWin}</td><td>${r.result.draw}</td><td>${r.result.bWin}</td><td>${r.result.drawRisk}</td><td>${r.result.confidence}</td><td>${r.result.topScore}</td><td><button class="btn btn2" onclick="loadHistory(${r.id})">Load</button> <button class="btn btn2" onclick="deleteHistory(${r.id})">Delete</button></td></tr>`).join('')+'</table>';}
-function esc(x){return String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function loadHistory(id){const r=getHistory().find(x=>x.id===id); if(!r)return; Object.entries(r.inputs).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v}); run();}
-function deleteHistory(id){localStorage.setItem('footballPredictionHistoryV3',JSON.stringify(getHistory().filter(x=>x.id!==id)));renderHistory();}
-function clearHistory(){if(confirm('Clear all saved prediction history?')){localStorage.removeItem('footballPredictionHistoryV3');renderHistory();}}
-function exportHistory(){const items=getHistory();if(!items.length){alert('No history to export.');return;} const rows=[['Date/Time','Team A','Team B','A Win %','Draw %','B Win %','Draw Risk %','Confidence %','Top Score']];items.forEach(r=>rows.push([new Date(r.time).toLocaleString(),r.teamA,r.teamB,r.result.aWin,r.result.draw,r.result.bWin,r.result.drawRisk,r.result.confidence,r.result.topScore])); const csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n'); const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='football_prediction_history.csv';a.click();}
-
-function card(name,v){return `<div class="m"><small>${name}</small><b>${pct(v)}</b><div class="bar"><i style="width:${clamp(v*100,0,100)}%"></i></div></div>`}
-run();
+function savePDF(){
+  if($("output").style.display==="none"){
+    $("err").textContent="Please calculate the prediction first.";
+    return;
+  }
+  window.print();
+}
 </script>
 </body>
 </html>
